@@ -40,7 +40,7 @@ func RunServer(ctx context.Context, grpcPort, httpPort string, creds credentials
 		opts = append(opts, grpc.WithInsecure())
 	}
 
-	if err := v1.RegisterServiceHandlerFromEndpoint(ctx, mux, "localhost:"+grpcPort, opts); err != nil {
+	if err := v1.RegisterServiceHandlerFromEndpoint(ctx, mux, "127.0.0.1:"+grpcPort, opts); err != nil {
 		logger.Log.Fatal("failed to start HTTP gateway", zap.String("reason", err.Error()))
 	}
 

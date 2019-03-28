@@ -1,0 +1,118 @@
+syntax = "proto3";
+package v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-swagger/options/annotations.proto";
+
+// Country entity
+message Country {
+    // unique
+    int32 id = 1;
+    // name
+    string name = 2;
+    // code
+    string code = 3;
+}
+
+// VPNServer entity
+message VPNServer {
+    // unique id
+    int32 id = 1;
+    // hostname
+    string hostName = 2;
+    // IP address
+    string ip = 3;
+    // score
+    int32 score = 4;
+    // ping
+    int32 ping = 5;
+    // speed
+    int64 speed = 6;
+    // country
+    Country country = 7;
+    // number of VPN sessions
+    int32 numVPNSessions = 8;
+    // uptime
+    int64 uptime = 9;
+    // total of users
+    int32 totalUsers = 10;
+    // total traffics
+    int64 totalTraffic = 11;
+    // log type
+    string logType = 12;
+    // operator
+    string operator = 13;
+    // message
+    string message = 14;
+    // OpenVPN config
+    string openVPNConfig = 15;
+    // created time
+    google.protobuf.Timestamp createdAt = 16;
+    // updated time
+    google.protobuf.Timestamp updatedAt = 17;
+}
+
+// List country request
+message ListCountriesRequest {
+    // api version
+    string api = 1;
+}
+
+// List country response
+message ListCountriesResponse {
+    // api version
+    string api = 1;
+    // list countries
+    repeated Country data = 2;
+}
+
+// List VPN servers request
+message ListVPNServerRequest {
+    // api version
+    string api = 1;
+    // country code
+    string countryCode = 2;
+}
+
+// List VPN servers response {
+message ListVPNServerResponse {
+    // api version
+    string api = 1;
+    // list VPN servers
+    repeated VPNServer data = 2;
+}
+
+// VPNGateCrawler request
+message VPNGateCrawlerRequest {
+    // api version
+    string api = 1;
+}
+
+// VPNGateCrawler response
+message VPNGateCrawlerResponse {
+    // api version
+    string api = 1;
+    // list vpn servers
+    repeated VPNServer data = 2;
+}
+
+// Service
+service Service {
+    // crawl all vpn server
+    rpc VPNGateCrawler(VPNGateCrawlerRequest) returns (VPNGateCrawlerResponse);
+
+    // List all country that have available VPN servers
+    rpc ListCountries(ListCountriesRequest) returns (ListCountriesResponse) {
+        option (google.api.http) = {
+            get: "/v1/countries"
+        };
+    }
+
+    // List all VPN servers
+    rpc ListVPNServers(ListVPNServerRequest) returns (ListVPNServerResponse) {
+        option (google.api.http) = {
+            get: "/v1/servers"
+        };
+    }
+}

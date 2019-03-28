@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/tls-acme: 'true'
+    nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+  labels:
+    app: {{ .ServiceName }}
+  name: {{ .ServiceName }}
+spec:
+  backend:
+    serviceName: {{ .ServiceName }}
+    servicePort: 80
+  rules:
+  - host: {{ .ServiceName }}.ahiho.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .ServiceName }}
+          servicePort: 80
+  tls:
+  - secretName: {{ .ServiceName }}-tls-cert
+    hosts:
+    - {{ .ServiceName }}.ahiho.com
+

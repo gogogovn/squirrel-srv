@@ -1,0 +1,234 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "vpn.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/countries": {
+      "get": {
+        "summary": "List all country that have available VPN servers",
+        "operationId": "ListCountries",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListCountriesResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "api",
+            "description": "api version.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Service"
+        ]
+      }
+    },
+    "/v1/servers": {
+      "get": {
+        "summary": "List all VPN servers",
+        "operationId": "ListVPNServers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListVPNServerResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "api",
+            "description": "api version.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "countryCode",
+            "description": "country code.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Service"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "v1Country": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "unique"
+        },
+        "name": {
+          "type": "string",
+          "title": "name"
+        },
+        "code": {
+          "type": "string",
+          "title": "code"
+        }
+      },
+      "title": "Country entity"
+    },
+    "v1ListCountriesResponse": {
+      "type": "object",
+      "properties": {
+        "api": {
+          "type": "string",
+          "title": "api version"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Country"
+          },
+          "title": "list countries"
+        }
+      },
+      "title": "List country response"
+    },
+    "v1ListVPNServerResponse": {
+      "type": "object",
+      "properties": {
+        "api": {
+          "type": "string",
+          "title": "api version"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1VPNServer"
+          },
+          "title": "list VPN servers"
+        }
+      },
+      "title": "List VPN servers response {"
+    },
+    "v1VPNGateCrawlerResponse": {
+      "type": "object",
+      "properties": {
+        "api": {
+          "type": "string",
+          "title": "api version"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1VPNServer"
+          },
+          "title": "list vpn servers"
+        }
+      },
+      "title": "VPNGateCrawler response"
+    },
+    "v1VPNServer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "unique id"
+        },
+        "hostName": {
+          "type": "string",
+          "title": "hostname"
+        },
+        "ip": {
+          "type": "string",
+          "title": "IP address"
+        },
+        "score": {
+          "type": "integer",
+          "format": "int32",
+          "title": "score"
+        },
+        "ping": {
+          "type": "integer",
+          "format": "int32",
+          "title": "ping"
+        },
+        "speed": {
+          "type": "string",
+          "format": "int64",
+          "title": "speed"
+        },
+        "country": {
+          "$ref": "#/definitions/v1Country",
+          "title": "country"
+        },
+        "numVPNSessions": {
+          "type": "integer",
+          "format": "int32",
+          "title": "number of VPN sessions"
+        },
+        "uptime": {
+          "type": "string",
+          "format": "int64",
+          "title": "uptime"
+        },
+        "totalUsers": {
+          "type": "integer",
+          "format": "int32",
+          "title": "total of users"
+        },
+        "totalTraffic": {
+          "type": "string",
+          "format": "int64",
+          "title": "total traffics"
+        },
+        "logType": {
+          "type": "string",
+          "title": "log type"
+        },
+        "operator": {
+          "type": "string",
+          "title": "operator"
+        },
+        "message": {
+          "type": "string",
+          "title": "message"
+        },
+        "openVPNConfig": {
+          "type": "string",
+          "title": "OpenVPN config"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "created time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "updated time"
+        }
+      },
+      "title": "VPNServer entity"
+    }
+  }
+}

@@ -27,7 +27,7 @@ spec:
 #                      - totalcoinwallet.com
       containers:
       - name: squirrel
-        image: reg.ahiho.com/ahiho/squirrel:0.0.3
+        image: reg.ahiho.com/ahiho/squirrel:0.0.4
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -94,7 +94,7 @@ apiVersion: v1
 data:
   GRPC_PORT: "9090"
   HTTP_PORT: "8080"
-  DB_DRIVER: "mysql"
+  DB_DRIVER: "sqlite3"
   LOG_LEVEL: "-1"
 kind: ConfigMap
 metadata:

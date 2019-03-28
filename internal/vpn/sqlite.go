@@ -57,6 +57,7 @@ func (m *sqliteRepository) FindAllCountryHaveVPNServer() ([]*Country, error) {
 		Distinct().
 		From("countries").
 		LeftJoin("vpn_servers on vpn_servers.country_id = countries.id").
+		Where(sq.NotEq{"code": ""}).
 		OrderBy("countries.name").
 		ToSql()
 	if err != nil {

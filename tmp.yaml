@@ -27,7 +27,7 @@ spec:
 #                      - totalcoinwallet.com
       containers:
       - name: squirrel
-        image: reg.ahiho.com/ahiho/squirrel:0.0.2
+        image: reg.ahiho.com/ahiho/squirrel:0.0.3
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

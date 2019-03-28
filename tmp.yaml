@@ -1,0 +1,121 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: squirrel
+  labels:
+    app: squirrel
+spec:
+  replicas: 1
+#  strategy:
+#    type: RollingUpdate
+#    rollingUpdate:
+#      maxUnavailable: 50%
+#      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: squirrel
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - totalcoinwallet.com
+      containers:
+      - name: squirrel
+        image: reg.ahiho.com/ahiho/squirrel:0.0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: squirrel-cm
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 25
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 25
+          periodSeconds: 30
+#        resources:
+#          limits:
+#            cpu: 500m
+#            memory: 256Mi
+#          requests:
+#            cpu: 500m
+#            memory: 256Mi
+      terminationGracePeriodSeconds: 30
+      imagePullSecrets:
+      - name: regcred
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/tls-acme: 'true'
+    nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+  labels:
+    app: squirrel
+  name: squirrel
+spec:
+  backend:
+    serviceName: squirrel
+    servicePort: 80
+  rules:
+  - host: squirrel.ahiho.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: squirrel
+          servicePort: 80
+  tls:
+  - secretName: squirrel-tls-cert
+    hosts:
+    - squirrel.ahiho.com
+
+---
+apiVersion: v1
+data:
+  GRPC_PORT: "9090"
+  HTTP_PORT: "8080"
+  DB_DRIVER: "mysql"
+  LOG_LEVEL: "-1"
+kind: ConfigMap
+metadata:
+  labels:
+    app: squirrel
+  name: squirrel-cm
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: squirrel
+  labels:
+    app: squirrel
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: squirrel
+
+---

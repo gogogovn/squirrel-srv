@@ -16,18 +16,18 @@ spec:
       labels:
         app: squirrel
     spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - totalcoinwallet.com
+#      affinity:
+#        nodeAffinity:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+#            nodeSelectorTerms:
+#              - matchExpressions:
+#                  - key: kubernetes.io/hostname
+#                    operator: In
+#                    values:
+#                      - totalcoinwallet.com
       containers:
       - name: squirrel
-        image: reg.ahiho.com/ahiho/squirrel:0.0.1
+        image: reg.ahiho.com/ahiho/squirrel:0.0.2
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

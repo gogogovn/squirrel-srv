@@ -43,5 +43,5 @@ ADD data.db /go/bin
 
 WORKDIR /go/bin
 
-CMD ["./chocolate"]
+CMD ["./squirrel"]
 

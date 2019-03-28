@@ -12,22 +12,29 @@ type sqliteRepository struct {
 }
 
 func (m *sqliteRepository) CreateCountry(country Country) (int64, error) {
-	insert, args, err := sq.Insert("countries").
-		Columns("name", "code").
-		Values(country.Name, country.Code).
-		ToSql()
-	if err != nil {
-		return 0, err
+	existCountry, err := m.FindCountryByCode(country.Code)
+	if existCountry != nil {
+		return int64(existCountry.ID), nil
 	}
-	stmt, err := m.db.Preparex(insert)
-	if err != nil {
-		return 0, err
+	if err == ErrCountryNotFound {
+		insert, args, err := sq.Insert("countries").
+			Columns("name", "code").
+			Values(country.Name, country.Code).
+			ToSql()
+		if err != nil {
+			return 0, err
+		}
+		stmt, err := m.db.Preparex(insert)
+		if err != nil {
+			return 0, err
+		}
+		result, err := stmt.Exec(args...)
+		if err != nil {
+			return 0, err
+		}
+		return result.LastInsertId()
 	}
-	result, err := stmt.Exec(args...)
-	if err != nil {
-		return 0, err
-	}
-	return result.LastInsertId()
+	return 0, err
 }
 
 func (m *sqliteRepository) FindCountryByCode(code string) (*Country, error) {
@@ -122,9 +129,10 @@ func (m *sqliteRepository) FindVPNServerByCountryCode(code string) ([]*VPNServer
 	}
 	query, args, err := sq.Select("*").
 		Distinct().
-		From("vpn_servers.*, countries.id as country.id, countries.name as country.name, countries.code as country.code ").
+		From("vpn_servers").
 		LeftJoin("countries on countries.id = vpn_servers.country_id").
 		Where(sq.Eq{"country_id": country.ID}).
+		OrderBy("vpn_servers.speed desc").
 		ToSql()
 	if err != nil {
 		return nil, err
@@ -148,6 +156,8 @@ func (m *sqliteRepository) FindAllVPNServer() ([]*VPNServer, error) {
 	query, args, err := sq.Select("*").
 		Distinct().
 		From("vpn_servers").
+		LeftJoin("countries on countries.id = vpn_servers.country_id").
+		OrderBy("vpn_servers.speed desc").
 		ToSql()
 	if err != nil {
 		return nil, err

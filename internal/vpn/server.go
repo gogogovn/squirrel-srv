@@ -149,7 +149,7 @@ func RunServer() error {
 
 	c := cron.New()
 	defer c.Stop()
-	_ = c.AddFunc("@every 15m", func() {
+	_ = c.AddFunc("@every 5m", func() {
 		crawled, err := v1API.VPNGateCrawler(ctx, &v1.VPNGateCrawlerRequest{Api: apiVersion})
 		if err != nil {
 			logger.Log.Warn("crawl error: "+err.Error())

@@ -18,5 +18,4 @@ require (
 	golang.org/x/net v0.0.0-20190301231341-16b79f2e4e95
 	google.golang.org/genproto v0.0.0-20190227213309-4f5b463f9597
 	google.golang.org/grpc v1.19.1
-	hub.ahiho.com/xpartner/chocolate v0.0.0-20190304040605-17c0d9976c2c
 )

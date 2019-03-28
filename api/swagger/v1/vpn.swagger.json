@@ -15,6 +15,23 @@
     "application/json"
   ],
   "paths": {
+    "/healthz": {
+      "get": {
+        "summary": "Service heath",
+        "operationId": "Healthz",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1HealthzResponse"
+            }
+          }
+        },
+        "tags": [
+          "Service"
+        ]
+      }
+    },
     "/v1/countries": {
       "get": {
         "summary": "List all country that have available VPN servers",
@@ -73,6 +90,23 @@
           "Service"
         ]
       }
+    },
+    "/version": {
+      "get": {
+        "summary": "API Version",
+        "operationId": "Version",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1VersionResponse"
+            }
+          }
+        },
+        "tags": [
+          "Service"
+        ]
+      }
     }
   },
   "definitions": {
@@ -94,6 +128,16 @@
         }
       },
       "title": "Country entity"
+    },
+    "v1HealthzResponse": {
+      "type": "object",
+      "properties": {
+        "api": {
+          "type": "string",
+          "title": "API version"
+        }
+      },
+      "title": "API Heath response"
     },
     "v1ListCountriesResponse": {
       "type": "object",
@@ -229,6 +273,28 @@
         }
       },
       "title": "VPNServer entity"
+    },
+    "v1VersionResponse": {
+      "type": "object",
+      "properties": {
+        "api": {
+          "type": "string",
+          "title": "API version"
+        },
+        "buildTime": {
+          "type": "string",
+          "title": "Build time"
+        },
+        "commit": {
+          "type": "string",
+          "title": "Commit hash"
+        },
+        "release": {
+          "type": "string",
+          "title": "Release version"
+        }
+      },
+      "title": "API Version response"
     }
   }
 }

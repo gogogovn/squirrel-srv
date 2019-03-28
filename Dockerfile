@@ -21,7 +21,7 @@ ENV BUILD_TIME $(date -u '+%Y-%m-%d_%H:%M:%S')
 RUN bash -c "CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags \"-s -w -X ${PROJECT}/pkg/version.Release=${RELEASE} -X ${PROJECT}/pkg/version.Commit=${COMMIT} -X ${PROJECT}/pkg/version.BuildTime=${BUILD_TIME}\" -o ${APP}"
 
 FROM alpine
-COPY --from=build-env /app/chocolate /go/bin/chocolate
+COPY --from=build-env /app/squirrel /go/bin/squirrel
 
 ENV GRPC_PORT 9090
 ENV HTTP_PORT 8080
@@ -39,6 +39,7 @@ ADD certs/ca-certificates.crt /etc/ssl/certs/
 
 ADD migrations /go/bin/migrations
 ADD certs /go/bin/certs
+ADD data.db /go/bin
 
 WORKDIR /go/bin
 

@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 	"hub.ahiho.com/ahiho/squirrel-srv/pkg/api/v1"
 	"hub.ahiho.com/ahiho/squirrel-srv/pkg/logger"
+	"hub.ahiho.com/ahiho/squirrel-srv/pkg/version"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -23,6 +24,21 @@ var (
 
 type serviceServer struct {
 	repo Repository
+}
+
+func (s *serviceServer) Version(_ context.Context, _ *v1.VersionRequest) (*v1.VersionResponse, error) {
+	return &v1.VersionResponse{
+		Api:       apiVersion,
+		BuildTime: version.BuildTime,
+		Commit:    version.Commit,
+		Release:   version.Release,
+	}, nil
+}
+
+func (s *serviceServer) Healthz(_ context.Context, _ *v1.HealthzRequest) (*v1.HealthzResponse, error) {
+	return &v1.HealthzResponse{
+		Api: apiVersion,
+	}, nil
 }
 
 func (s *serviceServer) ListCountries(context.Context, *v1.ListCountriesRequest) (*v1.ListCountriesResponse, error) {

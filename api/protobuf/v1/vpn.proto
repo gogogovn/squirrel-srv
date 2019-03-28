@@ -97,10 +97,52 @@ message VPNGateCrawlerResponse {
     repeated VPNServer data = 2;
 }
 
+// API Version request
+message VersionRequest {
+
+}
+
+// API Version response
+message VersionResponse {
+    // API version
+    string api = 1;
+    // Build time
+    string buildTime = 2;
+    // Commit hash
+    string commit = 3;
+    // Release version
+    string release = 4;
+}
+
+// API Heath request
+message HealthzRequest{
+
+}
+
+// API Heath response
+message HealthzResponse {
+    // API version
+    string api = 1;
+}
+
 // Service
 service Service {
     // crawl all vpn server
     rpc VPNGateCrawler(VPNGateCrawlerRequest) returns (VPNGateCrawlerResponse);
+
+    // API Version
+    rpc Version (VersionRequest) returns (VersionResponse) {
+        option (google.api.http) = {
+            get: "/version"
+        };
+    }
+
+    // Service heath
+    rpc Healthz (HealthzRequest) returns (HealthzResponse) {
+        option (google.api.http) = {
+            get: "/healthz"
+        };
+    }
 
     // List all country that have available VPN servers
     rpc ListCountries(ListCountriesRequest) returns (ListCountriesResponse) {

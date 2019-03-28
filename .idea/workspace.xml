@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="97530a9d-2701-4f3e-9067-ee6e6645eef4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/api/protobuf/v1/vpn.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/vpn/entity.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/vpn/repository.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/vpn/service.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/vpn/sqlite.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -91,18 +85,6 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/internal/vpn/protocol/restful/restful.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="244">
-              <caret line="68" selection-start-line="68" selection-end-line="68" />
-              <folding>
-                <element signature="e#17#399#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pkg/logger/logger.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1140">
@@ -114,14 +96,26 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/internal/vpn/server.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="301">
-              <caret line="151" column="40" lean-forward="true" selection-start-line="151" selection-start-column="40" selection-end-line="151" selection-end-column="40" />
+            <state relative-caret-position="419">
+              <caret line="160" column="23" lean-forward="true" selection-start-line="160" selection-start-column="23" selection-end-line="160" selection-end-column="23" />
               <folding>
                 <element signature="e#13#606#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="30">
+                <caret line="2" column="50" selection-start-line="2" selection-start-column="50" selection-end-line="2" selection-end-column="50" />
+              </first_editor>
+              <second_editor />
             </state>
           </provider>
         </entry>
@@ -171,6 +165,7 @@
         <option value="$PROJECT_DIR$/internal/vpn/entity.go" />
         <option value="$PROJECT_DIR$/internal/vpn/sqlite.go" />
         <option value="$PROJECT_DIR$/internal/vpn/server.go" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -376,17 +371,17 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24969475" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24969475" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" />
       <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" weight="0.2930481" />
+      <window_info anchor="bottom" id="Terminal" visible="true" weight="0.2930481" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.27165776" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.2748663" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.2748663" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -626,11 +621,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/internal/vpn/server.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
-          <caret line="151" column="40" lean-forward="true" selection-start-line="151" selection-start-column="40" selection-end-line="151" selection-end-column="40" />
+        <state relative-caret-position="419">
+          <caret line="160" column="23" lean-forward="true" selection-start-line="160" selection-start-column="23" selection-end-line="160" selection-end-column="23" />
           <folding>
             <element signature="e#13#606#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="30">
+            <caret line="2" column="50" selection-start-line="2" selection-start-column="50" selection-end-line="2" selection-end-column="50" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>

@@ -1,3 +1,3 @@
-# Chocolate
+# Squirrel VPNs
 
-Chocolate server is an user management service
+Squirrel VPN servers that manages VPN list servers

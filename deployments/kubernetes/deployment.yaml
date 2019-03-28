@@ -34,8 +34,6 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ .ServiceName }}-cm
-        - secretRef:
-            name: {{ .ServiceName }}-secret
         livenessProbe:
           httpGet:
             path: /healthz

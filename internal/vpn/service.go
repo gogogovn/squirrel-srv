@@ -72,37 +72,15 @@ func (s *serviceServer) ListVPNServers(_ context.Context, req *v1.ListVPNServerR
 	} else {
 		vpns, err = s.repo.FindVPNServerByCountryCode(req.CountryCode)
 		if err != nil {
+			if err == ErrCountryNotFound {
+				return nil, status.Error(codes.NotFound, err.Error())
+			}
 			return nil, status.Error(codes.Unknown, "unknown error -> "+err.Error())
 		}
 	}
 	var resVPNs []*v1.VPNServer
 	for _, v := range vpns {
-		createdAt, _ := ptypes.TimestampProto(v.CreatedAt)
-		updatedAt, _ := ptypes.TimestampProto(v.UpdatedAt)
-		resVPN := v1.VPNServer{
-			Id: v.ID,
-			HostName: v.HostName,
-			Ip: v.IP,
-			Score: v.Score,
-			Ping: v.Ping,
-			Speed: v.Speed,
-			Country: &v1.Country{
-				Id: v.CountryID,
-				Name: v.Country.Name,
-				Code: v.Country.Code,
-			},
-			NumVPNSessions: v.NumVPNSessions,
-			Uptime: v.Uptime,
-			TotalUsers: v.TotalUsers,
-			TotalTraffic: v.TotalTraffic,
-			LogType: v.LogType,
-			Operator: v.Operator,
-			Message: v.Message,
-			OpenVPNConfig: v.OpenVPNConfig,
-			CreatedAt: createdAt,
-			UpdatedAt: updatedAt,
-		}
-		resVPNs = append(resVPNs, &resVPN)
+		resVPNs = append(resVPNs, s.vpnEntityToResponse(v))
 	}
 
 	return &v1.ListVPNServerResponse{
@@ -193,38 +171,41 @@ func (s *serviceServer) VPNGateCrawler(context.Context, *v1.VPNGateCrawlerReques
 	}
 	var resVPNs []*v1.VPNServer
 	for _, v := range servers {
-		createdAt, _ := ptypes.TimestampProto(v.CreatedAt)
-		updatedAt, _ := ptypes.TimestampProto(v.UpdatedAt)
-		resVPN := v1.VPNServer{
-			Id: v.ID,
-			HostName: v.HostName,
-			Ip: v.IP,
-			Score: v.Score,
-			Ping: v.Ping,
-			Speed: v.Speed,
-			Country: &v1.Country{
-				Id: v.CountryID,
-				Name: v.Country.Name,
-				Code: v.Country.Code,
-			},
-			NumVPNSessions: v.NumVPNSessions,
-			Uptime: v.Uptime,
-			TotalUsers: v.TotalUsers,
-			TotalTraffic: v.TotalTraffic,
-			LogType: v.LogType,
-			Operator: v.Operator,
-			Message: v.Message,
-			OpenVPNConfig: v.OpenVPNConfig,
-			CreatedAt: createdAt,
-			UpdatedAt: updatedAt,
-		}
-		resVPNs = append(resVPNs, &resVPN)
+		resVPNs = append(resVPNs, s.vpnEntityToResponse(v))
 	}
 
 	return &v1.VPNGateCrawlerResponse{
 		Api: apiVersion,
 		Data: resVPNs,
 	}, nil
+}
+
+func (s *serviceServer) vpnEntityToResponse(v *VPNServer) *v1.VPNServer {
+	createdAt, _ := ptypes.TimestampProto(v.CreatedAt)
+	updatedAt, _ := ptypes.TimestampProto(v.UpdatedAt)
+	return &v1.VPNServer{
+		Id: v.ID,
+		HostName: v.HostName,
+		Ip: v.IP,
+		Score: v.Score,
+		Ping: v.Ping,
+		Speed: v.Speed,
+		Country: &v1.Country{
+			Id: v.CountryID,
+			Name: v.Country.Name,
+			Code: v.Country.Code,
+		},
+		NumVPNSessions: v.NumVPNSessions,
+		Uptime: v.Uptime,
+		TotalUsers: v.TotalUsers,
+		TotalTraffic: v.TotalTraffic,
+		LogType: v.LogType,
+		Operator: v.Operator,
+		Message: v.Message,
+		OpenVPNConfig: v.OpenVPNConfig,
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
 }
 
 

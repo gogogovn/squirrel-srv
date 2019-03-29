@@ -1,0 +1,1 @@
+DROP TABLE vpn_servers, countries;

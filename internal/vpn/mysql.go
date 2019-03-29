@@ -3,15 +3,15 @@ package vpn
 import (
 	"database/sql"
 	sq "github.com/Masterminds/squirrel"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/mattn/go-sqlite3"
 )
 
-type sqliteRepository struct {
+type mysqlRepository struct {
 	db *sqlx.DB
 }
 
-func (m *sqliteRepository) CreateCountry(country Country) (int64, error) {
+func (m *mysqlRepository) CreateCountry(country Country) (int64, error) {
 	existCountry, err := m.FindCountryByCode(country.Code)
 	if existCountry != nil {
 		return int64(existCountry.ID), nil
@@ -37,7 +37,7 @@ func (m *sqliteRepository) CreateCountry(country Country) (int64, error) {
 	return 0, err
 }
 
-func (m *sqliteRepository) FindCountryByCode(code string) (*Country, error) {
+func (m *mysqlRepository) FindCountryByCode(code string) (*Country, error) {
 	query, args, err := sq.Select("*").From("countries").Where(sq.Eq{"code": code}).ToSql()
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func (m *sqliteRepository) FindCountryByCode(code string) (*Country, error) {
 	return &c, nil
 }
 
-func (m *sqliteRepository) FindAllCountryHaveVPNServer() ([]*Country, error) {
+func (m *mysqlRepository) FindAllCountryHaveVPNServer() ([]*Country, error) {
 	query, args, err := sq.Select("countries.*").
 		Distinct().
 		From("countries").
@@ -78,7 +78,7 @@ func (m *sqliteRepository) FindAllCountryHaveVPNServer() ([]*Country, error) {
 	return countries, nil
 }
 
-func (m *sqliteRepository) Create(server VPNServer) (int64, error) {
+func (m *mysqlRepository) Create(server VPNServer) (int64, error) {
 	insert, args, err := sq.Insert("vpn_servers").
 		Columns("host_name",
 			"ip",
@@ -123,12 +123,15 @@ func (m *sqliteRepository) Create(server VPNServer) (int64, error) {
 	return result.LastInsertId()
 }
 
-func (m *sqliteRepository) FindVPNServerByCountryCode(code string) ([]*VPNServer, error) {
+func (m *mysqlRepository) FindVPNServerByCountryCode(code string) ([]*VPNServer, error) {
 	country, err := m.FindCountryByCode(code)
 	if err != nil {
 		return nil, err
 	}
-	query, args, err := sq.Select("*").
+	query, args, err := sq.Select(`vpn_servers.*,
+		countries.name "country.name",
+		countries.code "country.code",
+		countries.id "country.id"`).
 		Distinct().
 		From("vpn_servers").
 		LeftJoin("countries on countries.id = vpn_servers.country_id").
@@ -139,22 +142,18 @@ func (m *sqliteRepository) FindVPNServerByCountryCode(code string) ([]*VPNServer
 		return nil, err
 	}
 	var vpnServers []*VPNServer
-	rows, err := m.db.Queryx(query, args...)
+	err = m.db.Select(&vpnServers, query, args...)
 	if err != nil {
 		return nil, err
-	}
-	for rows.Next() {
-		v := VPNServer{}
-		err := rows.StructScan(&v)
-		if err == nil {
-			vpnServers = append(vpnServers, &v)
-		}
 	}
 	return vpnServers, nil
 }
 
-func (m *sqliteRepository) FindAllVPNServer() ([]*VPNServer, error) {
-	query, args, err := sq.Select("*").
+func (m *mysqlRepository) FindAllVPNServer() ([]*VPNServer, error) {
+	query, args, err := sq.Select(`vpn_servers.*,
+		countries.name "country.name",
+		countries.code "country.code",
+		countries.id "country.id"`).
 		Distinct().
 		From("vpn_servers").
 		LeftJoin("countries on countries.id = vpn_servers.country_id").
@@ -164,22 +163,15 @@ func (m *sqliteRepository) FindAllVPNServer() ([]*VPNServer, error) {
 		return nil, err
 	}
 	var vpnServers []*VPNServer
-	rows, err := m.db.Queryx(query, args...)
+	err = m.db.Select(&vpnServers, query, args...)
 	if err != nil {
 		return nil, err
-	}
-	for rows.Next() {
-		v := VPNServer{}
-		err := rows.StructScan(&v)
-		if err == nil {
-			vpnServers = append(vpnServers, &v)
-		}
 	}
 	return vpnServers, nil
 }
 
-func (m *sqliteRepository) Truncate() error {
-	smt := `DELETE FROM vpn_servers`
+func (m *mysqlRepository) Truncate() error {
+	smt := `TRUNCATE TABLE vpn_servers`
 	_, err := m.db.Exec(smt)
 	if err != nil {
 		return err
@@ -189,5 +181,5 @@ func (m *sqliteRepository) Truncate() error {
 }
 
 func NewRepository(db *sqlx.DB) Repository {
-	return &sqliteRepository{db}
+	return &mysqlRepository{db}
 }

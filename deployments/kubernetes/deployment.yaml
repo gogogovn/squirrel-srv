@@ -16,15 +16,15 @@ spec:
       labels:
         app: {{ .ServiceName }}
     spec:
-#      affinity:
-#        nodeAffinity:
-#          requiredDuringSchedulingIgnoredDuringExecution:
-#            nodeSelectorTerms:
-#              - matchExpressions:
-#                  - key: kubernetes.io/hostname
-#                    operator: In
-#                    values:
-#                      - totalcoinwallet.com
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - totalcoinwallet.com
       containers:
       - name: {{ .ServiceName }}
         image: reg.ahiho.com/ahiho/{{ .ServiceName }}:{{ .Release }}

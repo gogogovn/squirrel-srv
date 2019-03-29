@@ -27,7 +27,7 @@ spec:
 #                      - totalcoinwallet.com
       containers:
       - name: squirrel
-        image: reg.ahiho.com/ahiho/squirrel:0.0.8
+        image: reg.ahiho.com/ahiho/squirrel:0.0.9
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -35,7 +35,7 @@ spec:
         - configMapRef:
             name: squirrel-cm
         - secretRef:
-        name: squirrel-secret
+            name: squirrel-secret
         livenessProbe:
           httpGet:
             path: /healthz

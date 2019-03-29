@@ -4,6 +4,8 @@
     <list default="true" id="97530a9d-2701-4f3e-9067-ee6e6645eef4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deployments/kubernetes/deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/deployments/kubernetes/deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tmp.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/tmp.yaml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -102,8 +104,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/deployments/kubernetes/deployment.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="32" column="25" selection-start-line="32" selection-start-column="25" selection-end-line="32" selection-end-column="25" />
+            <state relative-caret-position="270">
+              <caret line="18" selection-start-line="18" selection-end-line="26" selection-end-column="43" />
             </state>
           </provider>
         </entry>
@@ -706,8 +708,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/deployments/kubernetes/deployment.yaml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="32" column="25" selection-start-line="32" selection-start-column="25" selection-end-line="32" selection-end-column="25" />
+        <state relative-caret-position="270">
+          <caret line="18" selection-start-line="18" selection-end-line="26" selection-end-column="43" />
         </state>
       </provider>
     </entry>

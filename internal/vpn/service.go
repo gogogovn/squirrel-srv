@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"hub.ahiho.com/ahiho/squirrel-srv/pkg/api/v1"
+	"hub.ahiho.com/ahiho/squirrel-srv/pkg/auth"
 	"hub.ahiho.com/ahiho/squirrel-srv/pkg/logger"
 	"hub.ahiho.com/ahiho/squirrel-srv/pkg/version"
 	"io"
@@ -25,6 +26,20 @@ var (
 type serviceServer struct {
 	repo Repository
 }
+
+func (s *serviceServer) AuthFuncOverride(ctx context.Context, fullMethodName string) (context.Context, error) {
+	ignoreAuth := []string{
+		"/v1.Service/Version",
+		"/v1.Service/Healthz",
+	}
+	for _, ignore := range ignoreAuth {
+		if ignore == fullMethodName {
+			return ctx, nil
+		}
+	}
+	return auth.VerifyToken(ctx)
+}
+
 
 func (s *serviceServer) Version(_ context.Context, _ *v1.VersionRequest) (*v1.VersionResponse, error) {
 	return &v1.VersionResponse{

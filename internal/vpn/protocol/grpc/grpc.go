@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"go.uber.org/zap"
@@ -11,6 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"hub.ahiho.com/ahiho/squirrel-srv/pkg/api/v1"
+	"hub.ahiho.com/ahiho/squirrel-srv/pkg/auth"
 	"hub.ahiho.com/ahiho/squirrel-srv/pkg/logger"
 	"net"
 	"os"
@@ -52,12 +54,14 @@ func RunServer(ctx context.Context, v1API v1.ServiceServer, port string, creds c
 	opts = append(opts, grpc_middleware.WithUnaryServerChain(
 		grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 		grpc_zap.UnaryServerInterceptor(logger.Log, o...),
+		grpc_auth.UnaryServerInterceptor(auth.VerifyClientKey),
 	))
 
 	// Add stream interceptor (added as an example here)
 	opts = append(opts, grpc_middleware.WithStreamServerChain(
 		grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 		grpc_zap.StreamServerInterceptor(logger.Log, o...),
+		grpc_auth.StreamServerInterceptor(auth.VerifyClientKey),
 	))
 
 	// register service

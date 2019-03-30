@@ -9,9 +9,16 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"io/ioutil"
+	"os"
 	"time"
+)
+
+var (
+	kEnvApiKey = "API_KEY"
+	kApiKey    = "x-api-key"
 )
 
 var (
@@ -160,4 +167,17 @@ func GenerateToken(_ context.Context, u UserClaims) (string, error) {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 	return token.SignedString(signingKey)
+}
+
+func VerifyClientKey(ctx context.Context) (context.Context, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, status.Errorf(codes.Unauthenticated, "could not get client key")
+	}
+	if len(md.Get(kApiKey)) > 0 {
+		if md.Get(kApiKey)[0] == os.Getenv(kEnvApiKey) {
+			return ctx, nil
+		}
+	}
+	return nil, status.Errorf(codes.Unauthenticated, "could not get client key")
 }

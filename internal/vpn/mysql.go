@@ -24,11 +24,7 @@ func (m *mysqlRepository) CreateCountry(country Country) (int64, error) {
 		if err != nil {
 			return 0, err
 		}
-		stmt, err := m.db.Preparex(insert)
-		if err != nil {
-			return 0, err
-		}
-		result, err := stmt.Exec(args...)
+		result, err := m.db.Exec(insert, args...)
 		if err != nil {
 			return 0, err
 		}
@@ -112,11 +108,7 @@ func (m *mysqlRepository) Create(server VPNServer) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	stmt, err := m.db.Preparex(insert)
-	if err != nil {
-		return 0, err
-	}
-	result, err := stmt.Exec(args...)
+	result, err := m.db.Exec(insert, args...)
 	if err != nil {
 		return 0, err
 	}

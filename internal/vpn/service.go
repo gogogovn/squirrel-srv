@@ -37,7 +37,7 @@ func (s *serviceServer) AuthFuncOverride(ctx context.Context, fullMethodName str
 			return ctx, nil
 		}
 	}
-	return auth.VerifyToken(ctx)
+	return auth.VerifyClientKey(ctx)
 }
 
 

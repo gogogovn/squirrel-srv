@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/Masterminds/squirrel v1.1.0
+	github.com/awa/go-iap v0.0.0-20190326010036-04b80e5afe1d
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang-migrate/migrate/v4 v4.2.5
@@ -11,7 +12,6 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/grpc-ecosystem/grpc-gateway v1.8.5
 	github.com/jmoiron/sqlx v1.2.0
-	github.com/mattn/go-sqlite3 v1.9.0
 	github.com/robfig/cron v0.0.0-20180505203441-b41be1df6967
 	github.com/sirupsen/logrus v1.4.0 // indirect
 	go.uber.org/atomic v1.3.2 // indirect

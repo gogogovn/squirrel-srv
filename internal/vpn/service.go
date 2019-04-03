@@ -2,6 +2,7 @@ package vpn
 
 import (
 	"encoding/csv"
+	"github.com/awa/go-iap/appstore"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/net/context"
@@ -14,6 +15,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -53,6 +55,24 @@ func (s *serviceServer) Version(_ context.Context, _ *v1.VersionRequest) (*v1.Ve
 func (s *serviceServer) Healthz(_ context.Context, _ *v1.HealthzRequest) (*v1.HealthzResponse, error) {
 	return &v1.HealthzResponse{
 		Api: apiVersion,
+	}, nil
+}
+
+func (s *serviceServer) VerifyAppleReceipt(ctx context.Context, req *v1.VerifyAppleReceiptRequest) (*v1.VerifyAppleReceiptResponse, error) {
+	client := appstore.New()
+	verifyReq := appstore.IAPRequest{
+		ReceiptData: req.ReceiptData,
+		Password: os.Getenv("APPLE_SHARED_SECRET_KEY"),
+	}
+	resp := &appstore.IAPResponse{}
+	err := client.Verify(ctx, verifyReq, resp)
+	if err != nil {
+		return nil, status.Error(codes.NotFound, "verify receipt err -> "+err.Error())
+	}
+	return &v1.VerifyAppleReceiptResponse{
+		Api: apiVersion,
+		Status: int32(resp.Status),
+		Message: appstore.HandleError(resp.Status).Error(),
 	}, nil
 }
 

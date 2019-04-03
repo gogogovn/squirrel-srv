@@ -97,6 +97,32 @@ message VPNGateCrawlerResponse {
     repeated VPNServer data = 2;
 }
 
+// Verify Apple Receipt request
+message VerifyAppleReceiptRequest {
+    // api version
+    string api = 1;
+    // Receipt data
+    string receiptData = 2;
+    // Exclude old transactions
+    bool excludeOldTransactions = 3;
+    // Environment
+    enum Environment {
+        SANDBOX = 0;
+        PRODUCTION = 1;
+    }
+    Environment env = 4;
+}
+
+// Verify Apple Receipt Response
+message VerifyAppleReceiptResponse {
+    // api version
+    string api = 1;
+    // status
+    int32 status = 2;
+    // message
+    string message = 3;
+}
+
 // API Version request
 message VersionRequest {
 
@@ -141,6 +167,14 @@ service Service {
     rpc Healthz (HealthzRequest) returns (HealthzResponse) {
         option (google.api.http) = {
             get: "/healthz"
+        };
+    }
+
+    // Verify Apple Receipt
+    rpc VerifyAppleReceipt(VerifyAppleReceiptRequest) returns (VerifyAppleReceiptResponse) {
+        option (google.api.http) = {
+            post : "/v1/verify-receipt"
+            body : "*"
         };
     }
 

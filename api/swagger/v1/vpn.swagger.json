@@ -91,6 +91,33 @@
         ]
       }
     },
+    "/v1/verify-receipt": {
+      "post": {
+        "summary": "Verify Apple Receipt",
+        "operationId": "VerifyAppleReceipt",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1VerifyAppleReceiptResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1VerifyAppleReceiptRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Service"
+        ]
+      }
+    },
     "/version": {
       "get": {
         "summary": "API Version",
@@ -110,6 +137,15 @@
     }
   },
   "definitions": {
+    "VerifyAppleReceiptRequestEnvironment": {
+      "type": "string",
+      "enum": [
+        "SANDBOX",
+        "PRODUCTION"
+      ],
+      "default": "SANDBOX",
+      "title": "Environment"
+    },
     "v1Country": {
       "type": "object",
       "properties": {
@@ -273,6 +309,47 @@
         }
       },
       "title": "VPNServer entity"
+    },
+    "v1VerifyAppleReceiptRequest": {
+      "type": "object",
+      "properties": {
+        "api": {
+          "type": "string",
+          "title": "api version"
+        },
+        "receiptData": {
+          "type": "string",
+          "title": "Receipt data"
+        },
+        "excludeOldTransactions": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "Exclude old transactions"
+        },
+        "env": {
+          "$ref": "#/definitions/VerifyAppleReceiptRequestEnvironment"
+        }
+      },
+      "title": "Verify Apple Receipt request"
+    },
+    "v1VerifyAppleReceiptResponse": {
+      "type": "object",
+      "properties": {
+        "api": {
+          "type": "string",
+          "title": "api version"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int32",
+          "title": "status"
+        },
+        "message": {
+          "type": "string",
+          "title": "message"
+        }
+      },
+      "title": "Verify Apple Receipt Response"
     },
     "v1VersionResponse": {
       "type": "object",

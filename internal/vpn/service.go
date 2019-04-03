@@ -69,11 +69,16 @@ func (s *serviceServer) VerifyAppleReceipt(ctx context.Context, req *v1.VerifyAp
 	if err != nil {
 		return nil, status.Error(codes.NotFound, "verify receipt err -> "+err.Error())
 	}
+	var message string
+	receiptErr := appstore.HandleError(resp.Status)
+	if receiptErr != nil {
+		message = receiptErr.Error()
+	}
 	return &v1.VerifyAppleReceiptResponse{
 		Api: apiVersion,
 		Data: &v1.VerifyAppleReceiptResponse_ReceiptResponse{
 			Status: int32(resp.Status),
-			Message: appstore.HandleError(resp.Status).Error(),
+			Message: message,
 		},
 	}, nil
 }

@@ -146,6 +146,21 @@
       "default": "SANDBOX",
       "title": "Environment"
     },
+    "VerifyAppleReceiptResponseReceiptResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32",
+          "title": "status"
+        },
+        "message": {
+          "type": "string",
+          "title": "message"
+        }
+      },
+      "title": "response date"
+    },
     "v1Country": {
       "type": "object",
       "properties": {
@@ -339,14 +354,8 @@
           "type": "string",
           "title": "api version"
         },
-        "status": {
-          "type": "integer",
-          "format": "int32",
-          "title": "status"
-        },
-        "message": {
-          "type": "string",
-          "title": "message"
+        "data": {
+          "$ref": "#/definitions/VerifyAppleReceiptResponseReceiptResponse"
         }
       },
       "title": "Verify Apple Receipt Response"

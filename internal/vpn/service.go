@@ -71,8 +71,10 @@ func (s *serviceServer) VerifyAppleReceipt(ctx context.Context, req *v1.VerifyAp
 	}
 	return &v1.VerifyAppleReceiptResponse{
 		Api: apiVersion,
-		Status: int32(resp.Status),
-		Message: appstore.HandleError(resp.Status).Error(),
+		Data: &v1.VerifyAppleReceiptResponse_ReceiptResponse{
+			Status: int32(resp.Status),
+			Message: appstore.HandleError(resp.Status).Error(),
+		},
 	}, nil
 }
 

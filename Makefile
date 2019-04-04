@@ -3,7 +3,7 @@ APP?=squirrel
 PORT?=8080
 SRC_PATH=$(shell pwd)
 
-RELEASE?=0.2.7
+RELEASE?=0.2.8
 COMMIT?=$(shell git rev-parse --short HEAD)
 BUILD_TIME?=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
 CONTAINER_IMAGE?=reg.ahiho.com/ahiho/${APP}

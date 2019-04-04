@@ -13,7 +13,7 @@ COPY . .
 ENV PROJECT "hub.ahiho.com/ahiho/squirrel-srv"
 ENV APP "squirrel"
 
-ENV RELEASE "0.2.7"
+ENV RELEASE "0.2.8"
 ENV COMMIT $(git rev-parse --short HEAD)
 ENV BUILD_TIME $(date -u '+%Y-%m-%d_%H:%M:%S')
 

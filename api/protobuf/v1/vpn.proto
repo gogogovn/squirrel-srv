@@ -117,14 +117,6 @@ message VerifyAppleReceiptRequest {
 message VerifyAppleReceiptResponse {
     // api version
     string api = 1;
-    // response date
-    message ReceiptResponse {
-        // status
-        int32 status = 1;
-        // message
-        string message = 2;
-    }
-    ReceiptResponse data = 2;
 }
 
 // API Version request

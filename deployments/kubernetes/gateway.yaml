@@ -13,4 +13,4 @@ spec:
         - destination:
             host: {{ .ServiceName }}
             port:
-              number: 80
+              number: "80"

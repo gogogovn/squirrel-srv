@@ -10,7 +10,7 @@ RUN go mod download
 # COPY the source code as the last step
 COPY . .
 
-ENV PROJECT "hub.ahiho.com/ahiho/squirrel-srv"
+ENV PROJECT "squirrel-srv"
 ENV APP "squirrel"
 
 ENV RELEASE "0.3.0"

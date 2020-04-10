@@ -7,6 +7,6 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    app: {{ .ServiceName }}
-  name: {{ .ServiceName }}-cm
-
+    app: ${SERVICE_NAME}
+  namespace: ${NAMESPACE}
+  name: ${SERVICE_NAME}

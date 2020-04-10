@@ -11,12 +11,12 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
-	"hub.ahiho.com/ahiho/squirrel-srv/pkg/api/v1"
-	"hub.ahiho.com/ahiho/squirrel-srv/pkg/auth"
-	"hub.ahiho.com/ahiho/squirrel-srv/pkg/logger"
 	"net"
 	"os"
 	"os/signal"
+	"squirrel-srv/pkg/api/v1"
+	"squirrel-srv/pkg/auth"
+	"squirrel-srv/pkg/logger"
 )
 
 // codeToLevel redirects OK to DEBUG level logging instead of INFO

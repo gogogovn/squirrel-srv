@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"hub.ahiho.com/ahiho/squirrel-srv/internal/vpn"
-	"hub.ahiho.com/ahiho/squirrel-srv/pkg/version"
+	"squirrel-srv/internal/vpn"
+	"squirrel-srv/pkg/version"
 	"log"
 	"os"
 )

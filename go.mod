@@ -1,4 +1,4 @@
-module hub.ahiho.com/ahiho/squirrel-srv
+module squirrel-srv
 
 go 1.12
 

@@ -7,12 +7,12 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"hub.ahiho.com/ahiho/squirrel-srv/internal/vpn/protocol/restful/middleware"
-	"hub.ahiho.com/ahiho/squirrel-srv/pkg/api/v1"
-	"hub.ahiho.com/ahiho/squirrel-srv/pkg/logger"
 	"net/http"
 	"os"
 	"os/signal"
+	"squirrel-srv/internal/vpn/protocol/restful/middleware"
+	"squirrel-srv/pkg/api/v1"
+	"squirrel-srv/pkg/logger"
 	"time"
 )
 

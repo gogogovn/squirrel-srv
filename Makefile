@@ -1,4 +1,4 @@
-PROJECT?=hub.ahiho.com/ahiho/squirrel-srv
+PROJECT?=squirrel-srv
 APP?=squirrel
 PORT?=8080
 SRC_PATH=$(shell pwd)

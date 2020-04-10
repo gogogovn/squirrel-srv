@@ -12,11 +12,11 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/robfig/cron"
 	"google.golang.org/grpc/credentials"
-	"hub.ahiho.com/ahiho/squirrel-srv/internal/vpn/protocol/grpc"
-	"hub.ahiho.com/ahiho/squirrel-srv/internal/vpn/protocol/restful"
-	"hub.ahiho.com/ahiho/squirrel-srv/pkg/api/v1"
-	"hub.ahiho.com/ahiho/squirrel-srv/pkg/logger"
 	"os"
+	"squirrel-srv/internal/vpn/protocol/grpc"
+	"squirrel-srv/internal/vpn/protocol/restful"
+	"squirrel-srv/pkg/api/v1"
+	"squirrel-srv/pkg/logger"
 	"strconv"
 )
 

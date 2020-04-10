@@ -21,7 +21,6 @@ import (
 )
 
 var (
-
 	kEnvPrivateKey = "PRIVATE_KEY"
 	kEnvPublicKey  = "PUBLIC_KEY"
 
@@ -33,6 +32,7 @@ var (
 	kEnvDBUser     = "DB_USER"
 	kEnvDBPassword = "DB_PASSWORD"
 	kEnvDBSchema   = "DB_SCHEMA"
+	kEnvDBPort     = "DB_PORT"
 
 	kEnvLogLevel      = "LOG_LEVEL"
 	kEnvLogTimeFormat = "LOG_TIME_FORMAT"
@@ -67,6 +67,8 @@ type Config struct {
 	DBPassword string
 	// DBSchema is schema of database
 	DBSchema string
+	// DBPort
+	DBPort string
 
 	// Log parameters section
 	// LogLevel is global log level: Debug(-1), Info(0), Warn(1), Error(2), DPanic(3), Panic(4), Fatal(5)
@@ -95,6 +97,7 @@ func RunServer() error {
 	flag.StringVar(&cfg.DBUser, "db-user", os.Getenv(kEnvDBUser), "Database user")
 	flag.StringVar(&cfg.DBPassword, "db-password", os.Getenv(kEnvDBPassword), "Database password")
 	flag.StringVar(&cfg.DBSchema, "db-schema", os.Getenv(kEnvDBSchema), "Database schema")
+	flag.StringVar(&cfg.DBPort, "db-port", os.Getenv(kEnvDBPort), "Database port")
 	flag.IntVar(&cfg.LogLevel, "log-level", logLevelEnv, "Global log level")
 	flag.StringVar(&cfg.LogTimeFormat, "log-time-format", os.Getenv(kEnvLogTimeFormat),
 		"Print time format for logger e.g. 2006-01-02T15:04:05Z07:00")
@@ -117,10 +120,11 @@ func RunServer() error {
 	// Drop it for another database
 	param := "parseTime=true&multiStatements=true"
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?%s",
 		cfg.DBUser,
 		cfg.DBPassword,
 		cfg.DBHost,
+		cfg.DBPort,
 		cfg.DBSchema,
 		param)
 	if cfg.DBDriver == "sqlite3" {
@@ -150,11 +154,10 @@ func RunServer() error {
 	}
 	err = m.Steps(1)
 	if err != nil {
-		logger.Log.Warn("migrate database err ->"+err.Error())
+		logger.Log.Warn("migrate database err ->" + err.Error())
 	}
 
 	_ = dbMigrate.Close()
-
 
 	// TLS
 	var creds credentials.TransportCredentials
@@ -178,9 +181,9 @@ func RunServer() error {
 	_ = c.AddFunc("@every 1m", func() {
 		crawled, err := v1API.VPNGateCrawler(ctx, &v1.VPNGateCrawlerRequest{Api: apiVersion})
 		if err != nil {
-			logger.Log.Warn("crawl error: "+err.Error())
+			logger.Log.Warn("crawl error: " + err.Error())
 		}
-		logger.Log.Info("crawled success "+strconv.Itoa(len(crawled.Data))+ " items")
+		logger.Log.Info("crawled success " + strconv.Itoa(len(crawled.Data)) + " items")
 	})
 	c.Start()
 

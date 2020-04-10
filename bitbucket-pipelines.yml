@@ -37,9 +37,9 @@ pipelines:
             # Base64 decode our kubeconfig file into a .kube config file (this will be destroyed automatically after this step runs)
             - mkdir -p ~/.kube
             - echo $KUBE_CONFIG | base64 -d > ~/.kube/config
+            - kubectl create namespace $NAMESPACE --dry-run -o yaml | kubectl apply -f -
             # Create docker secret
-            - kubectl --namespace=$NAMESPACE create secret docker-registry regcred --docker-server=$REGISTRY_HOST --docker-username=$REGISTRY_USER --docker-password=$REGISTRY_PASSWORD --docker-email=$REGISTRY_EMAIL --dry-run -o yaml > docker-secret.yaml
-            - kubectl --namespace=$NAMESPACE apply -f docker-secret.yaml
+            - kubectl --namespace=$NAMESPACE create secret docker-registry regcred --docker-server=$REGISTRY_HOST --docker-username=$REGISTRY_USER --docker-password=$REGISTRY_PASSWORD --docker-email=$REGISTRY_EMAIL --dry-run -o yaml | kubectl apply -f -
             # Tell our Kubernetes deployment to use the new Docker image tag
             - kubectl --namespace=$NAMESPACE apply -f k8s-spec.yaml
             # Verify deployment successful

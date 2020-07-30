@@ -58,6 +58,7 @@ jobs:
         SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
         HOST_NAME: ${{ secrets.HOST_NAME }}
         DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
         DB_SCHEMA: ${{ secrets.DB_SCHEMA }}
         DB_USER: ${{ secrets.DB_USER }}
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}

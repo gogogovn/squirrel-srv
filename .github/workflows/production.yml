@@ -8,61 +8,78 @@ on:
 jobs:
   build:
 
-    runs-on: ahiho/bitkube-pipeline
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
 
-    - name: Build & push docker image
-      run: |
-        export DOCKER_IMAGE=$IMAGE_NAME:prod-${{ github.sha }}
-      # build the Docker image (this will use the Dockerfile in the root of the repo)
-        docker build -t $DOCKER_IMAGE -f Dockerfile .
-      # authenticate with the Docker Hub registry
-        $(aws ecr get-login --region $AWS_REGION --no-include-email)
-      # push the new Docker image to the Docker registry
-        docker push $DOCKER_IMAGE
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+    
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
       env:
-        AWS_REGION: ${{ secrets.AWS_REGION }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ secrets.IMAGE }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: Logout of Amazon ECR
+      if: always()
+      run: docker logout ${{ steps.login-ecr.outputs.registry }}
       
   deploy:
     needs: build
-    runs-on: ahiho/bitkube-pipeline
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v1    
 
-    - name: Deploy to k8s
-      run: |
-        export IMAGE_TAG=prod-${{ github.sha }}
-      # Make script execuable
-        chmod a+x ./scripts/gen-secret.sh
-        chmod a+x ./scripts/make-kubernetes-spec.sh
-      # Replace env variable to k8s spec
-        ./scripts/make-kubernetes-spec.sh
-      # NOTE: $KUBE_CONFIG is secret stored as a base64 encoded string
-      # Base64 decode our kubeconfig file into a .kube config file (this will be destroyed automatically after this step runs)
-        mkdir -p ~/.kube
-        echo $KUBE_CONFIG | base64 -d > ~/.kube/config
-      # Create docker secret
-        ./scripts/gen-secret.sh $NAMESPACE
-      # Tell our Kubernetes deployment to use the new Docker image tag
-        kubectl --namespace=$NAMESPACE apply -f k8s-spec.yaml
-      # Verify deployment successful
-        kubectl --namespace=$NAMESPACE rollout status deploy/$SERVICE_NAME --timeout=60s
+    - uses: Azure/k8s-set-context@v1
+      with:
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+    - uses: Azure/k8s-create-secret@v1
+      with:
+        namespace: ${{ secrets.NAMESPACE }}
+        container-registry-url: ${{ secrets.REGISTRY_HOST }}
+        container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
+        container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+        secret-name: regcred
+
+    - uses: cschleiden/replace-tokens@v1
+      with:
+        tokenPrefix: '${'
+        tokenSuffix: '}'
+        files: '["deploy/k8s/*.yaml"]'
       env:
-        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
-        NAMESPACE: ${{ secrets.NAMESPACE }}
-        SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
         IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+        IMAGE_TAG: prod-${{ github.sha }}
+        SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
         HOST_NAME: ${{ secrets.HOST_NAME }}
-        API_KEY: ${{ secrets.API_KEY }}
-        APPLE_SHARED_SECRET_KEY: ${{ secrets.APPLE_SHARED_SECRET_KEY }}
         DB_HOST: ${{ secrets.DB_HOST }}
-        DB_PASSWORD: ${{ secrets.DB_HOST }}
-        DB_PORT: ${{ secrets.DB_PORT }}
         DB_SCHEMA: ${{ secrets.DB_SCHEMA }}
         DB_USER: ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        API_KEY: ${{ secrets.API_KEY }}
+        APPLE_SHARED_SECRET_KEY: ${{ secrets.APPLE_SHARED_SECRET_KEY }}
+        
+    - uses: Azure/k8s-deploy@v1
+      with:
+        namespace: ${{ secrets.NAMESPACE }}
+        images: ${{ secrets.IMAGE_NAME }}:prod-${{ github.sha }}
+        manifests: |
+          deploy/k8s/0-secret.yaml
+          deploy/k8s/1-config.yaml
+          deploy/k8s/2-deployment.yaml
+          deploy/k8s/3-service.yaml
+          deploy/k8s/4-gateway.yaml

@@ -30,7 +30,7 @@ pipelines:
           script:
             - export IMAGE_TAG=$BITBUCKET_COMMIT
             # Make script execuable
-            - chmod a+x ./scripts/make-kubenetes-spec.sh
+            - chmod a+x ./scripts/make-kubernetes-spec.sh
             # Replace env variable to k8s spec
             - ./scripts/make-kubenetes-spec.sh
             # NOTE: $KUBE_CONFIG is secret stored as a base64 encoded string

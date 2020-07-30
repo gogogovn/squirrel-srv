@@ -1,0 +1,66 @@
+name: Production DevOps
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ahiho/bitkube-pipeline
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Build & push docker image
+      run: export DOCKER_IMAGE=$IMAGE_NAME:prod-${{ github.sha }}
+      # build the Docker image (this will use the Dockerfile in the root of the repo)
+      run: docker build -t $DOCKER_IMAGE -f Dockerfile .
+      # authenticate with the Docker Hub registry
+      run: $(aws ecr get-login --region $AWS_REGION --no-include-email)
+      # push the new Docker image to the Docker registry
+      run: docker push $DOCKER_IMAGE
+      env:
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+      
+  deploy:
+    needs: build
+    runs-on: ahiho/bitkube-pipeline
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Deploy to k8s
+      run: export IMAGE_TAG=prod-${{ github.sha }}
+      # Make script execuable
+      run: chmod a+x ./scripts/gen-secret.sh
+      run: chmod a+x ./scripts/make-kubernetes-spec.sh
+      # Replace env variable to k8s spec
+      run: ./scripts/make-kubernetes-spec.sh
+      # NOTE: $KUBE_CONFIG is secret stored as a base64 encoded string
+      # Base64 decode our kubeconfig file into a .kube config file (this will be destroyed automatically after this step runs)
+      run: mkdir -p ~/.kube
+      run: echo $KUBE_CONFIG | base64 -d > ~/.kube/config
+      # Create docker secret
+      run: ./scripts/gen-secret.sh $NAMESPACE
+      # Tell our Kubernetes deployment to use the new Docker image tag
+      run: kubectl --namespace=$NAMESPACE apply -f k8s-spec.yaml
+      # Verify deployment successful
+      run: kubectl --namespace=$NAMESPACE rollout status deploy/$SERVICE_NAME --timeout=60s
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        NAMESPACE: ${{ secrets.NAMESPACE }}
+        SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
+        IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+        HOST_NAME: ${{ secrets.HOST_NAME }}
+        API_KEY: ${{ secrets.API_KEY }}
+        APPLE_SHARED_SECRET_KEY: ${{ secrets.APPLE_SHARED_SECRET_KEY }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PASSWORD: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        DB_SCHEMA: ${{ secrets.DB_SCHEMA }}
+        DB_USER: ${{ secrets.DB_USER }}

@@ -44,5 +44,5 @@ spec:
             periodSeconds: 30
       terminationGracePeriodSeconds: 30
       imagePullSecrets:
-        - name: regcred
+        - name: aws-ecr-credentials
 

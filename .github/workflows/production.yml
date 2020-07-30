@@ -48,14 +48,6 @@ jobs:
       with:
         kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
-    - uses: Azure/k8s-create-secret@v1
-      with:
-        namespace: ${{ secrets.NAMESPACE }}
-        container-registry-url: ${{ secrets.REGISTRY_HOST }}
-        container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
-        container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-        secret-name: regcred
-
     - uses: cschleiden/replace-tokens@v1
       with:
         tokenPrefix: '${'

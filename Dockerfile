@@ -1,4 +1,4 @@
-FROM golang:1.11.4 as build-env
+FROM golang:1.17 as build-env
 # All these steps will be cached
 RUN mkdir /app
 WORKDIR /app

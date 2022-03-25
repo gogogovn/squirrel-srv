@@ -2,19 +2,23 @@ package vpn
 
 import (
 	"context"
+	"database/sql"
 	"flag"
 	"fmt"
+	"os"
+	"squirrel-srv/internal/vpn/protocol/grpc"
+	"squirrel-srv/internal/vpn/protocol/restful"
+	v1 "squirrel-srv/pkg/api/v1"
+	"squirrel-srv/pkg/logger"
+	"strconv"
+
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	"github.com/robfig/cron"
 	"google.golang.org/grpc/credentials"
-	"os"
-	"squirrel-srv/internal/vpn/protocol/grpc"
-	"squirrel-srv/internal/vpn/protocol/restful"
-	"squirrel-srv/pkg/api/v1"
-	"squirrel-srv/pkg/logger"
-	"strconv"
 )
 
 var (
@@ -134,27 +138,27 @@ func RunServer() error {
 	}
 	defer db.Close()
 
-	//dbMigrate, err := sql.Open("mysql", dsn)
-	//if err != nil {
-	//	return fmt.Errorf("failed to connect migrate database: %v", err)
-	//}
-	//
-	//driver, err := mysql.WithInstance(dbMigrate, &mysql.Config{})
-	//if err != nil {
-	//	return fmt.Errorf("failed to create driver migrate database: %v", err)
-	//}
-	//m, err := migrate.NewWithDatabaseInstance(
-	//	"file:migrations",
-	//	"mysql", driver)
-	//if err != nil {
-	//	return fmt.Errorf("failed to create migrate database instance: %v", err)
-	//}
-	//err = m.Steps(1)
-	//if err != nil {
-	//	logger.Log.Warn("migrate database err ->" + err.Error())
-	//}
-	//
-	//_ = dbMigrate.Close()
+	dbMigrate, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return fmt.Errorf("failed to connect migrate database: %v", err)
+	}
+
+	driver, err := mysql.WithInstance(dbMigrate, &mysql.Config{})
+	if err != nil {
+		return fmt.Errorf("failed to create driver migrate database: %v", err)
+	}
+	m, err := migrate.NewWithDatabaseInstance(
+		"file:migrations",
+		"mysql", driver)
+	if err != nil {
+		return fmt.Errorf("failed to create migrate database instance: %v", err)
+	}
+	err = m.Steps(1)
+	if err != nil {
+		logger.Log.Warn("migrate database err ->" + err.Error())
+	}
+
+	_ = dbMigrate.Close()
 
 	// TLS
 	var creds credentials.TransportCredentials
